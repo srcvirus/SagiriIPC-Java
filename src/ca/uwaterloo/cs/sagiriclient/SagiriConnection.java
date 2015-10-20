@@ -41,9 +41,9 @@ public class SagiriConnection {
         return greeting;
     }
     
-    public String startForward(int privateKey, short internalPort, short externalPort) 
+    public SagiriApplicationResponse startForward(int privateKey, short internalPort, short externalPort) 
             throws Exception {
-        String retMessage = null;
+        SagiriApplicationResponse response = null;
         try {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -51,18 +51,16 @@ public class SagiriConnection {
                     SagiriApplicationRequestCodes.HOST, privateKey, internalPort, 
                     externalPort);
             oos.writeObject(request);
-            SagiriApplicationResponse response = 
-                    (SagiriApplicationResponse) ois.readObject();
-            retMessage = response.getMessage();
+            response = (SagiriApplicationResponse) ois.readObject();
             socket.close();
         } catch (Exception ex) {
             throw ex;
         }
-        return retMessage;
+        return response;
     }
     
-    public String stopForward(int privateKey, short externalPort) throws Exception {
-        String retMessage = null;
+    public SagiriApplicationResponse stopForward(int privateKey, short externalPort) throws Exception {
+        SagiriApplicationResponse response = null;
         try {
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
@@ -70,14 +68,12 @@ public class SagiriConnection {
                     SagiriApplicationRequestCodes.STOP, privateKey, Short.MIN_VALUE, 
                     externalPort);
             oos.writeObject(request);
-            SagiriApplicationResponse response = 
-                    (SagiriApplicationResponse) ois.readObject();
-            retMessage = response.getMessage();
+            response = (SagiriApplicationResponse) ois.readObject();
             socket.close();
         } catch (Exception ex) {
             throw ex;
         }
-        return retMessage;
+        return response;
     }
     
     public void close() throws Exception {
